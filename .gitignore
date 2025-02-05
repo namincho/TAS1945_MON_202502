@@ -1,0 +1,28 @@
+# 빌드 결과물 무시하기
+build/
+dist/
+
+# 바이너리 파일 무시하기
+*.exe
+*.dll
+
+# 임시 파일 및 시스템 파일 무시
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# IDE 관련 파일 무시 (예: Visual Studio, JetBrains)
+.vscode/
+.idea/
+*.suo
+*.user
+*.rsuser
+
+# 패키지 관련 파일 무시
+node_modules/
+packages/
+
+# 숨김 파일이나 환경 설정 무시
+.env
+.secret
