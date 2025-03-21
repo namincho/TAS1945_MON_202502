@@ -210,6 +210,8 @@ namespace Tas1945_mon
 					Active_Final[row, col] = 1;
 				});
 
+				cbABS_apply.Checked = true;
+
 				btnRegRD_Set1.Enabled = false;
 				btnRegRD_Set2.Enabled = false;
 
@@ -2326,7 +2328,17 @@ namespace Tas1945_mon
         {
 			//이벤트 없음 - MsgParser쪽에서 checked의 T/F에 따라 함수 진입유무 달라짐
 		}
-	}
+
+        private void btnWhite_Cal_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cbApply_WhiteCal_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+    }
 
     /// <summary>
     /// 깜박임을 없애기 위한 Double buffer - 별료 효과 없다.

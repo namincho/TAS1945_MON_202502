@@ -602,9 +602,9 @@ namespace Tas1945_mon
 				else
 				{
 					if(g_fMainForm.cbQuad_Apply.Checked)
-						g_iZoom = 4;
+						g_iZoom = 3;
 					else
-						g_iZoom = 8;
+						g_iZoom = 6;
 				}
 
 				if ((g_gGraphics != null) && (g_bmBitmap != null))

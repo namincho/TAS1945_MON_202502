@@ -150,6 +150,59 @@ namespace Tas1945_mon
 		public float Gamma;
 
 		/// <summary>
+		/// 20250320 CNI : White Cal 기능 구현을 위해 25cal 함수 복사 및 변수 대부분 그대로 사용함
+		/// </summary>
+		/// <param name="g_asPixelData_Cal"></param>
+		public void Calibration_White_Cal(float[] g_asPixelData_Cal)
+		{
+			cal25_Cnt++;
+
+			LOG($"White calibration Measure : {cal25_Cnt}", Color.Red);
+
+			if (cal25_Cnt >= 20)
+			{
+				cal25_flag = false;
+				LOG("White cal 완료", Color.Red);
+			}
+
+			if (cal25_Cnt > 1)
+			{
+				try
+				{
+					int pixelCount = g_asPixelData_Cal.Length;
+					Parallel.For(0, pixelCount, i =>
+					{
+						float iValue = Get_PixelData(g_asPixelData_Cal, i);
+						Interlocked.Exchange(ref cal25AvrData[i], cal25AvrData[i] + iValue);
+					});
+
+					if (!cal25_flag)
+					{
+						Parallel.For(0, pixelCount, i =>
+						{
+							cal25AvrData[i] /= (int)(NUDGet(nudcal25) - 1);
+							int row = i / COL;
+							int col = i % COL;
+							Image_buf_25C[row, col] = cal25AvrData[i];
+						});
+
+						Cal25_buf_save();
+
+						g_iMoveAvrCnt_Cal = 0;
+						g_iBuffer_Cal_no = 1;
+						Array.Clear(g_aiMoveAvrData_Cal, 0, g_aiMoveAvrData_Cal.Length);
+						cal25_Cnt = 0;
+					}
+				}
+				catch (Exception ex)
+				{
+					ERR(ex.Message);
+				}
+			}
+		}
+
+
+		/// <summary>
 		/// 
 		/// </summary>
 		public void cal25_calibration(float[] g_asPixelData_Cal)
