@@ -395,6 +395,49 @@ namespace Tas1945_mon
 			return true;
 		}
 
+		public void White_buf_save()
+		{
+			try
+			{
+				if (calBufStreamW == null)
+				{
+					CalSavePath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+					CalSavePath = CalSavePath + @"\Cal_buf_Info\" + @"\";
+
+					CalFolder = new DirectoryInfo(CalSavePath);
+
+					if (CalFolder.Exists == false)
+					{
+						CalFolder.Create();
+					}
+
+					calBufStreamW = new StreamWriter(CalSavePath + "WhiteCal_buf_" + DateTime.Now.ToString("yyyy_MM_dd_HH_m_ss") + ".csv");
+
+					for (int i = 0; i < 60; i++)
+					{
+						for (int j = 0; j < 81; j++)
+						{
+							if (j == 80)
+							{
+								calBufStreamW.Write(Image_buf_WhiteCal[i, j].ToString());
+								break;
+							}
+							;
+							calBufStreamW.Write(Image_buf_WhiteCal[i, j].ToString() + ", ");
+						}
+						if (i != 59) calBufStreamW.Write("\n");
+					}
+					calBufStreamW.Close();
+					calBufStreamW = null;
+				}
+			}
+			catch (Exception ex)
+			{
+				ERR(ex.Message);
+			}
+		}
+
 		public void Cal25_buf_save()
 		{
 			try

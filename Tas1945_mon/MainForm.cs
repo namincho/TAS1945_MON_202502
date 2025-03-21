@@ -47,6 +47,9 @@ namespace Tas1945_mon
 
 		public bool DarkAvg_flag = false;
 
+		public bool WhiteCal_Save_flag = false;
+		public bool WhiteCal_Apply_flag = false;
+
 		public bool cal_mode = false;
 		public bool sensitivity_cal_flag = false;
 		public bool DP_apply_flag=false;
@@ -2331,8 +2334,10 @@ namespace Tas1945_mon
 
         private void btnWhite_Cal_Click(object sender, EventArgs e)
         {
-
-        }
+			if (BTNGet(btnGetPixelInfo) == "Read") return;
+			Array.Clear(cal25AvrData, 0, cal25AvrData.Length);
+			WhiteCal_Save_flag = true;
+		}
 
         private void cbApply_WhiteCal_CheckedChanged(object sender, EventArgs e)
         {

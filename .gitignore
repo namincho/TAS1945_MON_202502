@@ -5,12 +5,14 @@ dist/
 # 바이너리 파일 무시하기
 *.exe
 *.dll
+*.pdb
 
 # 임시 파일 및 시스템 파일 무시
 *.log
 *.tmp
 .DS_Store
 Thumbs.db
+*.cache
 
 # IDE 관련 파일 무시 (예: Visual Studio, JetBrains)
 .vscode/

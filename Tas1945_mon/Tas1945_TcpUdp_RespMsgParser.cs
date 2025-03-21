@@ -420,7 +420,7 @@ namespace Tas1945_mon
 								Array.Copy(g_asPixelData, g_asPixelData_Cal, g_asPixelData.Length);
 
 								// Calibration 처리
-								if (cal25_flag || cal35_flag || cal45_flag)
+								if (cal25_flag || cal35_flag || cal45_flag || WhiteCal_Save_flag)
 								{
 									if (cal25_flag && !moveAverage_cal(ref g_asPixelData_Cal, 8))
 									{
@@ -438,6 +438,7 @@ namespace Tas1945_mon
 										}
 										cal45_calibration(g_asPixelData_Cal);
 									}
+									else if (WhiteCal_Save_flag) Calibration_White_Cal(g_asPixelData_Cal);
 									Algorithm_Flag = false;
 									break;
 								}
