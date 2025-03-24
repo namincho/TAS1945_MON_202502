@@ -48,6 +48,7 @@ namespace Tas1945_mon
 		public bool DarkAvg_flag = false;
 
 		public bool WhiteCal_Save_flag = false;
+		public bool WhiteCal_Save_Complete_flag = false;
 		public bool WhiteCal_Apply_flag = false;
 
 		public bool cal_mode = false;
@@ -69,6 +70,8 @@ namespace Tas1945_mon
 
 		public int g_iDPCimage_CenterX = 0;
 		public int g_iDPCimage_CenterY = 0;
+
+		public int WhiteCal_gain = 0;
 
 		decimal g_decPreClockValue;
 
@@ -191,6 +194,8 @@ namespace Tas1945_mon
 				InitializeColorApplyComboBox();
 
 				TBSet(tbKalmanError, kalman_ME.ToString());
+
+				int.TryParse(TBGet(tbWhiteCal_gain), out WhiteCal_gain);
 
 				cbMinus_avg.Enabled = false;
 				cbDark_Apply.Checked = true;
@@ -2341,8 +2346,19 @@ namespace Tas1945_mon
 
         private void cbApply_WhiteCal_CheckedChanged(object sender, EventArgs e)
         {
+			if(!WhiteCal_Save_Complete_flag)
+            {
+				LOG("No white data found", Color.Red);
+				return;
+            }
 
-        }
+			if (CBGet(cbApply_WhiteCal))
+			{
+				WhiteCal_Apply_flag = true;
+				int.TryParse(TBGet(tbWhiteCal_gain), out WhiteCal_gain);
+			}
+			else WhiteCal_Apply_flag = false;
+		}
     }
 
     /// <summary>

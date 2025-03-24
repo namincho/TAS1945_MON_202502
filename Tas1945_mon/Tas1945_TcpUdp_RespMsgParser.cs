@@ -444,7 +444,7 @@ namespace Tas1945_mon
 								}
 
 								// BookMark #2 : ISP 관련 함수들 시작위치
-								if (cal_mode)  // Cal mode 적용여부에 따라 기존 flow 와 신규 flow 분기
+								if (cal_mode)  // MIR영상을 볼 수 있는 Cal mode 적용 분기
 								{
 									LBSet(lbGain, GAIN.ToString() + " )");
 									LBSet(lbKalmanError, kalman_ME.ToString() + " )");
@@ -492,7 +492,18 @@ namespace Tas1945_mon
 										});
 									}
 								}
-								else   // Cal mode check가 아닌 경우 = 기본 열반응 확인
+								else if(WhiteCal_Apply_flag) // SWIR영상을 볼 수 있는 White Cal mode 적용 분기
+								{
+									if (Offset_Apply(ref g_asPixelData, g_asPixelData.Length) == false)
+									{
+										Algorithm_Flag = false;
+										break;      //	Offset 적용
+									}
+
+									Calculate_WhiteCal_Data(ref g_asPixelData, g_asPixelData.Length, Image_buf_WhiteSignal, WhiteCal_gain);
+
+								}
+								else   // MIR과 SWIR 반응이 아닌 기본 영상 분기
 								{
 									if (Offset_Apply(ref g_asPixelData, g_asPixelData.Length) == false)
 									{

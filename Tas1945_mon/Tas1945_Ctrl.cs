@@ -78,7 +78,8 @@ namespace Tas1945_mon
 		public float[,] Image_buf_ISP = new float[50, 4860]; //Level이 변하는 픽셀에 실시간 대응을 위한 ISP data 수집용 buffer
 		public double[] Image_buf_ISP_offset = new double[4860]; //Level이 변하는 픽셀에 실시간 대응을 위한 ISP offset buffer
 
-		public float[,] Image_buf_WhiteCal = new float[ROW, COL]; //25C image
+		public float[,] Image_buf_WhiteCal = new float[ROW, COL]; //SWIR White image
+		public float[,] Image_buf_WhiteSignal = new float[ROW, COL]; //SWIR White image's Signal
 
 		public float[,] Image_buf_pulse = new float[100, 4860]; //Pulse noise Pixel을 거르기 위한 버퍼들
 		public double[] Image_buf_pulse_avg = new double[4860]; //Pulse noise Pixel을 거르기 위한 버퍼들
@@ -166,6 +167,7 @@ namespace Tas1945_mon
 			if (cal25_Cnt >= WhiteCal_Count)
 			{
 				WhiteCal_Save_flag= false;
+				WhiteCal_Save_Complete_flag = true;
 				LOG("White cal 완료", Color.Red);
 			}
 
@@ -188,6 +190,7 @@ namespace Tas1945_mon
 							int row = i / COL;
 							int col = i % COL;
 							Image_buf_WhiteCal[row, col] = cal25AvrData[i];
+							Image_buf_WhiteSignal[row, col] = Image_buf_WhiteCal[row, col] - g_asOffPixelData[i];
 						});
 
 						White_buf_save();
@@ -1726,6 +1729,22 @@ namespace Tas1945_mon
 			}
 
         }
+
+		public void Calculate_WhiteCal_Data(ref float[] asPixelData, int iPixelDataSize, float[,] signal, int gain)
+		{
+			if (iPixelDataSize > 4860) return;
+
+			for (int i = 0; i < 4860; i++)
+			{
+				row = (int)i / COL;
+				col = i - row * COL;
+
+				asPixelData[i] = (asPixelData[i] / signal[row,col]);
+				//if (asPixelData[i] < 0) asPixelData[i] = 0;
+				asPixelData[i] = asPixelData[i] * gain;
+			}
+		}
+
 		/// <summary>
 		/// Monte Carlo Method를 위해 만든 함수 : 2024.02.07
 		/// 자료형을 short에서 float를 바꾼 후 frame을 합하여 분해능 향상 도모

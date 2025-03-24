@@ -32,6 +32,8 @@ namespace Tas1945_mon
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.tpTas1945Ctrl = new System.Windows.Forms.TabPage();
+            this.cbApply_WhiteCal = new System.Windows.Forms.CheckBox();
+            this.btnSave_WhiteCal = new System.Windows.Forms.Button();
             this.cbDCT_Apply = new System.Windows.Forms.CheckBox();
             this.cbQuad_Apply = new System.Windows.Forms.CheckBox();
             this.label33 = new System.Windows.Forms.Label();
@@ -260,8 +262,7 @@ namespace Tas1945_mon
             this.lbEven = new Bulb.LedBulb();
             this.lbOdd = new Bulb.LedBulb();
             this.panMain = new Tas1945_mon.DoubleBufferPanel();
-            this.btnSave_WhiteCal = new System.Windows.Forms.Button();
-            this.cbApply_WhiteCal = new System.Windows.Forms.CheckBox();
+            this.tbWhiteCal_gain = new System.Windows.Forms.TextBox();
             this.tpTas1945Ctrl.SuspendLayout();
             this.groupBox5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudCsvSaveCnt)).BeginInit();
@@ -311,6 +312,7 @@ namespace Tas1945_mon
             // tpTas1945Ctrl
             // 
             this.tpTas1945Ctrl.BackColor = System.Drawing.SystemColors.Control;
+            this.tpTas1945Ctrl.Controls.Add(this.tbWhiteCal_gain);
             this.tpTas1945Ctrl.Controls.Add(this.cbApply_WhiteCal);
             this.tpTas1945Ctrl.Controls.Add(this.btnSave_WhiteCal);
             this.tpTas1945Ctrl.Controls.Add(this.cbDCT_Apply);
@@ -335,11 +337,32 @@ namespace Tas1945_mon
             this.tpTas1945Ctrl.TabIndex = 0;
             this.tpTas1945Ctrl.Text = "TAS1945 Ctrl";
             // 
+            // cbApply_WhiteCal
+            // 
+            this.cbApply_WhiteCal.AutoSize = true;
+            this.cbApply_WhiteCal.Location = new System.Drawing.Point(1239, 111);
+            this.cbApply_WhiteCal.Name = "cbApply_WhiteCal";
+            this.cbApply_WhiteCal.Size = new System.Drawing.Size(114, 18);
+            this.cbApply_WhiteCal.TabIndex = 53;
+            this.cbApply_WhiteCal.Text = "White Cal 적용";
+            this.cbApply_WhiteCal.UseVisualStyleBackColor = true;
+            this.cbApply_WhiteCal.CheckedChanged += new System.EventHandler(this.cbApply_WhiteCal_CheckedChanged);
+            // 
+            // btnSave_WhiteCal
+            // 
+            this.btnSave_WhiteCal.Location = new System.Drawing.Point(1254, 64);
+            this.btnSave_WhiteCal.Name = "btnSave_WhiteCal";
+            this.btnSave_WhiteCal.Size = new System.Drawing.Size(99, 43);
+            this.btnSave_WhiteCal.TabIndex = 52;
+            this.btnSave_WhiteCal.Text = "White Cal\r\n(데이터 저장)";
+            this.btnSave_WhiteCal.UseVisualStyleBackColor = true;
+            this.btnSave_WhiteCal.Click += new System.EventHandler(this.btnWhite_Cal_Click);
+            // 
             // cbDCT_Apply
             // 
             this.cbDCT_Apply.AutoSize = true;
             this.cbDCT_Apply.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbDCT_Apply.Location = new System.Drawing.Point(1239, 51);
+            this.cbDCT_Apply.Location = new System.Drawing.Point(1239, 42);
             this.cbDCT_Apply.Name = "cbDCT_Apply";
             this.cbDCT_Apply.Size = new System.Drawing.Size(75, 19);
             this.cbDCT_Apply.TabIndex = 51;
@@ -3106,26 +3129,13 @@ namespace Tas1945_mon
             this.panMain.Size = new System.Drawing.Size(693, 582);
             this.panMain.TabIndex = 20;
             // 
-            // btnSave_WhiteCal
+            // tbWhiteCal_gain
             // 
-            this.btnSave_WhiteCal.Location = new System.Drawing.Point(1254, 77);
-            this.btnSave_WhiteCal.Name = "btnSave_WhiteCal";
-            this.btnSave_WhiteCal.Size = new System.Drawing.Size(99, 43);
-            this.btnSave_WhiteCal.TabIndex = 52;
-            this.btnSave_WhiteCal.Text = "White Cal\r\n(데이터 저장)";
-            this.btnSave_WhiteCal.UseVisualStyleBackColor = true;
-            this.btnSave_WhiteCal.Click += new System.EventHandler(this.btnWhite_Cal_Click);
-            // 
-            // cbApply_WhiteCal
-            // 
-            this.cbApply_WhiteCal.AutoSize = true;
-            this.cbApply_WhiteCal.Location = new System.Drawing.Point(1239, 130);
-            this.cbApply_WhiteCal.Name = "cbApply_WhiteCal";
-            this.cbApply_WhiteCal.Size = new System.Drawing.Size(114, 18);
-            this.cbApply_WhiteCal.TabIndex = 53;
-            this.cbApply_WhiteCal.Text = "White Cal 적용";
-            this.cbApply_WhiteCal.UseVisualStyleBackColor = true;
-            this.cbApply_WhiteCal.CheckedChanged += new System.EventHandler(this.cbApply_WhiteCal_CheckedChanged);
+            this.tbWhiteCal_gain.Location = new System.Drawing.Point(1257, 131);
+            this.tbWhiteCal_gain.Name = "tbWhiteCal_gain";
+            this.tbWhiteCal_gain.Size = new System.Drawing.Size(67, 22);
+            this.tbWhiteCal_gain.TabIndex = 54;
+            this.tbWhiteCal_gain.Text = "100";
             // 
             // MainForm
             // 
@@ -3463,6 +3473,7 @@ namespace Tas1945_mon
         public System.Windows.Forms.CheckBox cbDCT_Apply;
         private System.Windows.Forms.Button btnSave_WhiteCal;
         private System.Windows.Forms.CheckBox cbApply_WhiteCal;
+        private System.Windows.Forms.TextBox tbWhiteCal_gain;
     }
 }
 
