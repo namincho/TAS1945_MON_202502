@@ -2354,10 +2354,19 @@ namespace Tas1945_mon
 
 			if (CBGet(cbApply_WhiteCal))
 			{
-				WhiteCal_Apply_flag = true;
+				NUDSet(nudMaxVal, 100);
+				NUDSet(nudMinVal, -100);
+
 				int.TryParse(TBGet(tbWhiteCal_gain), out WhiteCal_gain);
+				WhiteCal_Apply_flag = true;
 			}
-			else WhiteCal_Apply_flag = false;
+			else
+			{
+				NUDSet(nudMaxVal, 300);
+				NUDSet(nudMinVal, -300);
+
+				WhiteCal_Apply_flag = false;
+			}
 		}
     }
 

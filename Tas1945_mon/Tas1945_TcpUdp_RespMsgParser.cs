@@ -444,7 +444,7 @@ namespace Tas1945_mon
 								}
 
 								// BookMark #2 : ISP 관련 함수들 시작위치
-								if (cal_mode)  // MIR영상을 볼 수 있는 Cal mode 적용 분기
+								if (cal_mode)  // 열영상 Calibration 적용 분기
 								{
 									LBSet(lbGain, GAIN.ToString() + " )");
 									LBSet(lbKalmanError, kalman_ME.ToString() + " )");
@@ -503,7 +503,7 @@ namespace Tas1945_mon
 									Calculate_WhiteCal_Data(ref g_asPixelData, g_asPixelData.Length, Image_buf_WhiteSignal, WhiteCal_gain);
 
 								}
-								else   // MIR과 SWIR 반응이 아닌 기본 영상 분기
+								else   // 기본 Offset만 적용한 영상 분기
 								{
 									if (Offset_Apply(ref g_asPixelData, g_asPixelData.Length) == false)
 									{
