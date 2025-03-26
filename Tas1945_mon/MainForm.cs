@@ -71,8 +71,6 @@ namespace Tas1945_mon
 		public int g_iDPCimage_CenterX = 0;
 		public int g_iDPCimage_CenterY = 0;
 
-		public int WhiteCal_gain = 0;
-
 		decimal g_decPreClockValue;
 
 		/// <summary>
@@ -195,8 +193,6 @@ namespace Tas1945_mon
 
 				TBSet(tbKalmanError, kalman_ME.ToString());
 
-				int.TryParse(TBGet(tbWhiteCal_gain), out WhiteCal_gain);
-
 				cbMinus_avg.Enabled = false;
 				cbDark_Apply.Checked = true;
 
@@ -218,8 +214,6 @@ namespace Tas1945_mon
 					Active_Final[row, col] = 1;
 				});
 
-				cbABS_apply.Checked = true;
-
 				btnRegRD_Set1.Enabled = false;
 				btnRegRD_Set2.Enabled = false;
 
@@ -231,6 +225,7 @@ namespace Tas1945_mon
 				rbSetPixel4.Enabled = false;
 				rbSetPixel5.Enabled = false;
 
+				cbApply_WhiteCal.Enabled = false;
 				cbSensitivy_cal.Enabled = false;
 				tbGain.Enabled = false;
 				btnGain.Enabled = false;
@@ -1698,19 +1693,32 @@ namespace Tas1945_mon
 			#region _SAVE_INT_IMAGE_BUFFER_
 
 			if (bt == btcal25load) { Image_buf_25C = iBuffer; LOG("Successful saving of 25℃ image buffer", Color.Blue); }
-			else if (bt == btcal35load)
-			{
-				Image_buf_35C = iBuffer; LOG("Successful saving of 35℃ image buffer", Color.Blue);
-				
-			}
+			else if (bt == btcal35load) { Image_buf_35C = iBuffer; LOG("Successful saving of 35℃ image buffer", Color.Blue); }
 			else if (bt == btcal45load) { Image_buf_45C = iBuffer; LOG("Successful saving of 45℃ image buffer", Color.Blue); }
 			else if (bt == btcalOffsetload) { Image_buf_offset = iBuffer; LOG("Successful saving of Offset image buffer", Color.Blue); }
+			else if (bt == btnLoad_WhiteCal)
+			{
+				Image_buf_WhiteCal = iBuffer;
+
+				Parallel.For(0, 4860, i =>
+				{
+					int row = i / COL;
+					int col = i % COL;
+					Image_buf_WhiteSignal[row, col] = Image_buf_WhiteCal[row, col] - g_asOffPixelData[i];
+				});
+
+				WhiteCal_Save_Complete_flag = true;
+
+				LOG("Successful saving of WhiteCal data buffer", Color.Blue);
+			}
 
 			#endregion
 		}
 
 		private void cbCalmode_CheckedChanged(object sender, EventArgs e)
 		{
+			// Check가 True일 때 Offset과 Move8 효과 사라지고 + ISP Cal 기능들 사용가능
+
 			bool bChecked = cbCalmode.Checked;
 
 			if (bChecked)
@@ -1724,6 +1732,8 @@ namespace Tas1945_mon
 				cbDPC_apply.Enabled = bChecked;
 				cbHR_apply.Enabled = bChecked;
 				cbRT_Apply.Enabled = bChecked;
+
+				cbApply_WhiteCal.Enabled = bChecked;
 
 				// Cal_mode 진입 flag
 				cal_mode = bChecked;
@@ -1747,6 +1757,9 @@ namespace Tas1945_mon
 				cbHR_apply.Enabled = bChecked;
 				cbRT_Apply.Enabled = bChecked;
 
+				cbApply_WhiteCal.Checked = bChecked;
+				cbApply_WhiteCal.Enabled = bChecked;
+
 				s_bInitKalamn = bChecked;
 
 				// Cal mode 체크 해제 시 Image_buf_ISP를 다시 처음부터 쌓기 위한 초기화
@@ -1759,7 +1772,7 @@ namespace Tas1945_mon
 
         private void cbSensitivy_cal_CheckedChanged(object sender, EventArgs e)
         {
-			if (cbSensitivy_cal.Checked == true)
+			if (cbSensitivy_cal.Checked == true && cbApply_WhiteCal.Checked == false)
 			{
 				for (int i = 0; i < 4860; i++)
                 {
@@ -1768,6 +1781,25 @@ namespace Tas1945_mon
 
 					sensitivity_buf[row, col] = (double)(Image_buf_45C[row, col] - Image_buf_25C[row, col]);
 					precomputedStoN[row,col] = Math.Round(sensitivity_buf[row, col] / ((double)Image_buf_35C[row, col] + 1), 2);
+				}
+
+				Array.Copy(Image_buf_35C, precomputedNoise, Image_buf_35C.Length);
+
+				tbGain.Enabled = true;
+				btnGain.Enabled = true;
+
+				sensitivity_cal_flag = true;
+			}
+			else if(cbSensitivy_cal.Checked == true && cbApply_WhiteCal.Checked == true)
+            {
+				for (int i = 0; i < 4860; i++)
+				{
+					int row = i / COL;
+					int col = i % COL;
+
+					// 20250325 CNI : WhiteCal의 signal은 data 측정 또는 load 때 이미 계산하기 때문에 여기에서는 대입만 함
+					sensitivity_buf[row, col] = Image_buf_WhiteSignal[row, col];
+					precomputedStoN[row, col] = Math.Round(sensitivity_buf[row, col] / ((double)Image_buf_35C[row, col] + 1), 2);
 				}
 
 				Array.Copy(Image_buf_35C, precomputedNoise, Image_buf_35C.Length);
@@ -1970,6 +2002,7 @@ namespace Tas1945_mon
 			{
 				// 숫자로 변환에 성공한 경우
 				kalman_ME = result;
+				LOG($"Kalman M.E 값이 {kalman_ME}로 바뀌었습니다.", Color.Blue);
 			}
 			else  // 숫자로 변환에 실패한 경우		
 				return;
@@ -1981,7 +2014,6 @@ namespace Tas1945_mon
 
 				Kalman_ME_Each[row, col] = (double)(Image_buf_35C[row, col] * kalman_ME);
 			}
-
 		}
 
         private void btnDataverify_Click(object sender, EventArgs e)
@@ -2346,7 +2378,7 @@ namespace Tas1945_mon
 
         private void cbApply_WhiteCal_CheckedChanged(object sender, EventArgs e)
         {
-			if(!WhiteCal_Save_Complete_flag)
+			if(CBGet(cbApply_WhiteCal) == true && !WhiteCal_Save_Complete_flag)
             {
 				LOG("No white data found", Color.Red);
 				return;
@@ -2357,13 +2389,11 @@ namespace Tas1945_mon
 				NUDSet(nudMaxVal, 100);
 				NUDSet(nudMinVal, -100);
 
-				int.TryParse(TBGet(tbWhiteCal_gain), out WhiteCal_gain);
 				WhiteCal_Apply_flag = true;
 			}
 			else
 			{
-				NUDSet(nudMaxVal, 300);
-				NUDSet(nudMinVal, -300);
+				cbCalmode_CheckedChanged(sender, e);
 
 				WhiteCal_Apply_flag = false;
 			}

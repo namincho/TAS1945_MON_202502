@@ -1730,7 +1730,7 @@ namespace Tas1945_mon
 
         }
 
-		public void Calculate_WhiteCal_Data(ref float[] asPixelData, int iPixelDataSize, float[,] signal, int gain)
+		public void Calculate_WhiteCal_Data(ref float[] asPixelData, int iPixelDataSize, float[,] signal, double gain)
 		{
 			if (iPixelDataSize > 4860) return;
 
@@ -1741,7 +1741,7 @@ namespace Tas1945_mon
 
 				asPixelData[i] = (asPixelData[i] / signal[row,col]);
 				//if (asPixelData[i] < 0) asPixelData[i] = 0;
-				asPixelData[i] = asPixelData[i] * gain;
+				asPixelData[i] = (float)(asPixelData[i] * gain);
 			}
 		}
 

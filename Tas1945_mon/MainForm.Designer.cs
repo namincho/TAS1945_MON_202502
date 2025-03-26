@@ -32,7 +32,7 @@ namespace Tas1945_mon
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.tpTas1945Ctrl = new System.Windows.Forms.TabPage();
-            this.cbApply_WhiteCal = new System.Windows.Forms.CheckBox();
+            this.btnLoad_WhiteCal = new System.Windows.Forms.Button();
             this.btnSave_WhiteCal = new System.Windows.Forms.Button();
             this.cbDCT_Apply = new System.Windows.Forms.CheckBox();
             this.cbQuad_Apply = new System.Windows.Forms.CheckBox();
@@ -136,6 +136,7 @@ namespace Tas1945_mon
             this.nudLpfSensitive = new System.Windows.Forms.NumericUpDown();
             this.tgsLpfIir = new JCS.ToggleSwitch();
             this.tpImageCal = new System.Windows.Forms.TabPage();
+            this.cbApply_WhiteCal = new System.Windows.Forms.CheckBox();
             this.cbDPC55_Apply = new System.Windows.Forms.CheckBox();
             this.cbDPC33_Apply = new System.Windows.Forms.CheckBox();
             this.btnGamma_Apply = new System.Windows.Forms.Button();
@@ -185,7 +186,6 @@ namespace Tas1945_mon
             this.lbKalmanError = new System.Windows.Forms.Label();
             this.label27 = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
-            this.label16 = new System.Windows.Forms.Label();
             this.cbDPC_apply = new System.Windows.Forms.CheckBox();
             this.Noise_ck = new System.Windows.Forms.CheckBox();
             this.cbNF_apply = new System.Windows.Forms.CheckBox();
@@ -262,7 +262,6 @@ namespace Tas1945_mon
             this.lbEven = new Bulb.LedBulb();
             this.lbOdd = new Bulb.LedBulb();
             this.panMain = new Tas1945_mon.DoubleBufferPanel();
-            this.tbWhiteCal_gain = new System.Windows.Forms.TextBox();
             this.tpTas1945Ctrl.SuspendLayout();
             this.groupBox5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudCsvSaveCnt)).BeginInit();
@@ -312,8 +311,7 @@ namespace Tas1945_mon
             // tpTas1945Ctrl
             // 
             this.tpTas1945Ctrl.BackColor = System.Drawing.SystemColors.Control;
-            this.tpTas1945Ctrl.Controls.Add(this.tbWhiteCal_gain);
-            this.tpTas1945Ctrl.Controls.Add(this.cbApply_WhiteCal);
+            this.tpTas1945Ctrl.Controls.Add(this.btnLoad_WhiteCal);
             this.tpTas1945Ctrl.Controls.Add(this.btnSave_WhiteCal);
             this.tpTas1945Ctrl.Controls.Add(this.cbDCT_Apply);
             this.tpTas1945Ctrl.Controls.Add(this.cbQuad_Apply);
@@ -337,20 +335,19 @@ namespace Tas1945_mon
             this.tpTas1945Ctrl.TabIndex = 0;
             this.tpTas1945Ctrl.Text = "TAS1945 Ctrl";
             // 
-            // cbApply_WhiteCal
+            // btnLoad_WhiteCal
             // 
-            this.cbApply_WhiteCal.AutoSize = true;
-            this.cbApply_WhiteCal.Location = new System.Drawing.Point(1239, 111);
-            this.cbApply_WhiteCal.Name = "cbApply_WhiteCal";
-            this.cbApply_WhiteCal.Size = new System.Drawing.Size(114, 18);
-            this.cbApply_WhiteCal.TabIndex = 53;
-            this.cbApply_WhiteCal.Text = "White Cal 적용";
-            this.cbApply_WhiteCal.UseVisualStyleBackColor = true;
-            this.cbApply_WhiteCal.CheckedChanged += new System.EventHandler(this.cbApply_WhiteCal_CheckedChanged);
+            this.btnLoad_WhiteCal.Location = new System.Drawing.Point(1239, 121);
+            this.btnLoad_WhiteCal.Name = "btnLoad_WhiteCal";
+            this.btnLoad_WhiteCal.Size = new System.Drawing.Size(99, 43);
+            this.btnLoad_WhiteCal.TabIndex = 52;
+            this.btnLoad_WhiteCal.Text = "Load\r\nWhite Cal";
+            this.btnLoad_WhiteCal.UseVisualStyleBackColor = true;
+            this.btnLoad_WhiteCal.Click += new System.EventHandler(this.g_calCtrl_btLoad);
             // 
             // btnSave_WhiteCal
             // 
-            this.btnSave_WhiteCal.Location = new System.Drawing.Point(1254, 64);
+            this.btnSave_WhiteCal.Location = new System.Drawing.Point(1239, 71);
             this.btnSave_WhiteCal.Name = "btnSave_WhiteCal";
             this.btnSave_WhiteCal.Size = new System.Drawing.Size(99, 43);
             this.btnSave_WhiteCal.TabIndex = 52;
@@ -1730,6 +1727,7 @@ namespace Tas1945_mon
             // 
             // tpImageCal
             // 
+            this.tpImageCal.Controls.Add(this.cbApply_WhiteCal);
             this.tpImageCal.Controls.Add(this.cbDPC55_Apply);
             this.tpImageCal.Controls.Add(this.cbDPC33_Apply);
             this.tpImageCal.Controls.Add(this.btnGamma_Apply);
@@ -1779,7 +1777,6 @@ namespace Tas1945_mon
             this.tpImageCal.Controls.Add(this.lbKalmanError);
             this.tpImageCal.Controls.Add(this.label27);
             this.tpImageCal.Controls.Add(this.label18);
-            this.tpImageCal.Controls.Add(this.label16);
             this.tpImageCal.Controls.Add(this.cbDPC_apply);
             this.tpImageCal.Controls.Add(this.Noise_ck);
             this.tpImageCal.Controls.Add(this.cbNF_apply);
@@ -1806,6 +1803,17 @@ namespace Tas1945_mon
             this.tpImageCal.TabIndex = 3;
             this.tpImageCal.Text = "Image Cal";
             this.tpImageCal.UseVisualStyleBackColor = true;
+            // 
+            // cbApply_WhiteCal
+            // 
+            this.cbApply_WhiteCal.AutoSize = true;
+            this.cbApply_WhiteCal.Location = new System.Drawing.Point(512, 15);
+            this.cbApply_WhiteCal.Name = "cbApply_WhiteCal";
+            this.cbApply_WhiteCal.Size = new System.Drawing.Size(82, 18);
+            this.cbApply_WhiteCal.TabIndex = 19;
+            this.cbApply_WhiteCal.Text = "WhiteCal";
+            this.cbApply_WhiteCal.UseVisualStyleBackColor = true;
+            this.cbApply_WhiteCal.CheckedChanged += new System.EventHandler(this.cbApply_WhiteCal_CheckedChanged);
             // 
             // cbDPC55_Apply
             // 
@@ -2277,15 +2285,6 @@ namespace Tas1945_mon
             this.label18.TabIndex = 4;
             this.label18.Text = "(현재 Gain:";
             // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(524, 16);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(357, 14);
-            this.label16.TabIndex = 4;
-            this.label16.Text = "(Check 시, Offset/Move8 효과 사라짐 + 아래 Cal기능 사용가능)";
-            // 
             // cbDPC_apply
             // 
             this.cbDPC_apply.AutoSize = true;
@@ -2374,7 +2373,7 @@ namespace Tas1945_mon
             this.nudcal35.Size = new System.Drawing.Size(56, 22);
             this.nudcal35.TabIndex = 2;
             this.nudcal35.Value = new decimal(new int[] {
-            100,
+            30,
             0,
             0,
             0});
@@ -3129,14 +3128,6 @@ namespace Tas1945_mon
             this.panMain.Size = new System.Drawing.Size(693, 582);
             this.panMain.TabIndex = 20;
             // 
-            // tbWhiteCal_gain
-            // 
-            this.tbWhiteCal_gain.Location = new System.Drawing.Point(1257, 131);
-            this.tbWhiteCal_gain.Name = "tbWhiteCal_gain";
-            this.tbWhiteCal_gain.Size = new System.Drawing.Size(67, 22);
-            this.tbWhiteCal_gain.TabIndex = 54;
-            this.tbWhiteCal_gain.Text = "100";
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -3382,7 +3373,6 @@ namespace Tas1945_mon
         private System.Windows.Forms.CheckBox cbNF_apply;
         private System.Windows.Forms.CheckBox cbDP_apply;
         private System.Windows.Forms.CheckBox cbSensitivy_cal;
-        private System.Windows.Forms.Label label16;
         private System.Windows.Forms.TextBox tbGain;
         private System.Windows.Forms.Button btnGain;
         private System.Windows.Forms.Label lbGain;
@@ -3473,7 +3463,7 @@ namespace Tas1945_mon
         public System.Windows.Forms.CheckBox cbDCT_Apply;
         private System.Windows.Forms.Button btnSave_WhiteCal;
         private System.Windows.Forms.CheckBox cbApply_WhiteCal;
-        private System.Windows.Forms.TextBox tbWhiteCal_gain;
+        private System.Windows.Forms.Button btnLoad_WhiteCal;
     }
 }
 

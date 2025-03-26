@@ -444,7 +444,7 @@ namespace Tas1945_mon
 								}
 
 								// BookMark #2 : ISP 관련 함수들 시작위치
-								if (cal_mode)  // 열영상 Calibration 적용 분기
+								if (cal_mode == true  && WhiteCal_Apply_flag == false)  // 열영상 Calibration 적용 분기
 								{
 									LBSet(lbGain, GAIN.ToString() + " )");
 									LBSet(lbKalmanError, kalman_ME.ToString() + " )");
@@ -492,7 +492,7 @@ namespace Tas1945_mon
 										});
 									}
 								}
-								else if(WhiteCal_Apply_flag) // SWIR영상을 볼 수 있는 White Cal mode 적용 분기
+								else if(cal_mode == true && WhiteCal_Apply_flag == true) // SWIR영상을 볼 수 있는 White Cal mode 적용 분기
 								{
 									if (Offset_Apply(ref g_asPixelData, g_asPixelData.Length) == false)
 									{
@@ -500,8 +500,49 @@ namespace Tas1945_mon
 										break;      //	Offset 적용
 									}
 
-									Calculate_WhiteCal_Data(ref g_asPixelData, g_asPixelData.Length, Image_buf_WhiteSignal, WhiteCal_gain);
+									//  감도 보정
+									if (sensitivity_cal_flag) 
+										Calculate_WhiteCal_Data(ref g_asPixelData, g_asPixelData.Length, Image_buf_WhiteSignal, GAIN);
 
+									// 노이즈필터 적용
+									if (Noise_filter_flag) Kalman_20240207(g_asPixelData, g_asPixelData.Length, Kalman_ME_Each);
+
+									// Cal data를 이용하여 Dead Pixel 선정
+									if (DP_apply_flag)
+									{
+										DeadPixel_Init_Apply(g_asPixelData, g_asPixelData.Length);
+										DeadPixel_Apply(g_asPixelData, g_asPixelData.Length);
+										if (cbRT_Apply.Checked) DeadPixel_RT_Apply(g_asPixelData, g_asPixelData.Length);
+										DeadPixel_Count(g_asPixelData, g_asPixelData.Length);
+									}
+
+									// DPC 알고리즘 반복적용
+									if (DPC_apply_flag)
+									{
+										// BookMark #8 : DPC 함수들 실행위치
+										if (cbDPC33_Apply.Checked)
+										{
+											DPC_Apply_3by3_EdgeInterpolation1(g_asPixelData, g_asPixelData.Length);
+											DPC_Apply_3by3_EdgeInterpolation2(g_asPixelData, g_asPixelData.Length);
+										}
+										if (cbDPC55_Apply.Checked)
+										{
+											DPC_Apply_5by5_EdgeInterpolation1(g_asPixelData, g_asPixelData.Length);
+											DPC_Apply_5by5_EdgeInterpolation2(g_asPixelData, g_asPixelData.Length);
+										}
+										interpolationPixel_Count(g_asPixelData.Length);
+									}
+
+									if (ISP_offset_flag) ISP_Offset_Cal(g_asPixelData, g_asPixelData.Length);
+
+									// Offset 체크박스 체크 시 버퍼를 이용하여 offset 적용
+									if (cbISPoffset.Checked)
+									{
+										Parallel.For(0, 4860, i =>
+										{
+											g_asPixelData[i] -= (float)Image_buf_ISP_offset[i];
+										});
+									}
 								}
 								else   // 기본 Offset만 적용한 영상 분기
 								{
